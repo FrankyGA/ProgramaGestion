@@ -30,6 +30,7 @@ public class LoginVapers implements WindowListener, ActionListener
 	//Si es modal, hasta que no se cierre no se puede volver a la ventana de atrás, true
 	Dialog dlgMensaje = new Dialog(ventana, "Mensaje", true);
 	Label lblMensaje = new Label("XXXXXXXXXXXXXXXXXXXX");
+	int tipoUsuario;
 	
 	//Constructor de la clase
 	public LoginVapers()
@@ -84,14 +85,22 @@ public class LoginVapers implements WindowListener, ActionListener
 			//Coge los textos de la ventana: usuario y clave
 			String usuario = txtUsuario.getText();
 			String clave = txtClave.getText();
+			//Si el usuario es el administrador es tipo 0
+			if (usuario.equals("administrador")) {
+				tipoUsuario= 0 ;
+			}else {
+				//Si es cualquier otro es tipo 1
+				tipoUsuario = 1;
+			}
 			//Crea objeto y conecta BD
 			ConexionVapers bd = new ConexionVapers();
 			bd.conectar();
 			//Hacer un SELECT para consultar datos de conexión
 			//Con tabla usuarios
 			//Clave codificada SHA2
+			//También añadimos consulta para el tipo de usuario
 			int resultado = bd.consultar("SELECT * FROM usuarios WHERE nombreUsuario = '"+usuario+
-					"' AND claveUsuario = SHA2('"+clave+"', 256);");
+					"' AND claveUsuario = SHA2('"+clave+"', 256);", tipoUsuario);
 			//Si no son correctos los datos
 			//Caso negativo (-1): Mostrar Mensaje Error
 			if(resultado==-1)
@@ -110,6 +119,7 @@ public class LoginVapers implements WindowListener, ActionListener
 				//Caso afirmativo (0-1): Mostrar Menú Principal
 				new MenuPrincipalVapers(resultado);
 				ventana.setVisible(false);
+				bd.guardarLog(tipoUsuario, "Login");
 			}
 			//Desconectar BD
 			bd.desconectar();

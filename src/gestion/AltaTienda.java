@@ -36,9 +36,13 @@ public class AltaTienda implements WindowListener, ActionListener
 	//Creamos objeto conexión
 	ConexionVapers ConexionVapers = new ConexionVapers();
 
+	int tipoUsuario;
+	
 	//Constructor de alta tienda
-	public AltaTienda()
-	{
+	public AltaTienda(int tipoUsuario){
+		
+		this.tipoUsuario = tipoUsuario;
+		
 		//Listener para dar funcionalidad
 		ventana.addWindowListener(this);
 		dlgMensaje.addWindowListener(this);
@@ -105,7 +109,7 @@ public class AltaTienda implements WindowListener, ActionListener
 			//Hacer el INSERT con esos datos. guardando datos en String y aplicando método
 			String sentencia = "INSERT INTO tiendas VALUES(null,'"+
 			nombre+"','"+direccion+"');";
-			int resultado = ConexionVapers.insertarTienda(sentencia);
+			int resultado = ConexionVapers.insertarTienda(sentencia, tipoUsuario);
 			
 			//If para controlar que los datos estén introducidos
 			if(txtNombre.getText().length()==0||txtDireccion.getText().length()==0) {

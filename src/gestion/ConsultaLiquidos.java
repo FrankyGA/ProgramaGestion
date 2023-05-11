@@ -14,16 +14,20 @@ public class ConsultaLiquidos implements WindowListener, ActionListener
 {
 	
 	Frame ventana = new Frame("Listado de Líquidos");
-	TextArea txaListado = new TextArea(10,40);
+	TextArea txaListado = new TextArea(10,67);
 	Button btnPdf = new Button("PDF");
 	ConexionVapers bd = new ConexionVapers();
 
-	public ConsultaLiquidos()
+	int tipoUsuario;
+	
+	public ConsultaLiquidos(int tipoUsuario)
 	{
+		
+		this.tipoUsuario=tipoUsuario;
 		//Listener para dar funcionalidad
 		ventana.addWindowListener(this);
 		//Parámetros de la pantalla
-		ventana.setSize(340, 260); 
+		ventana.setSize(530, 260); 
 		//No Permitir redimensionar
 		ventana.setResizable(false);
 
@@ -33,12 +37,17 @@ public class ConsultaLiquidos implements WindowListener, ActionListener
 		//Conectar
 		bd.conectar();
 		//Sacar la información y meterla en el TextArea
-		txaListado.setText(bd.obtenerLiquidos());
+		txaListado.setText(bd.obtenerLiquidos(tipoUsuario));
 		//Desconectar
 		bd.desconectar();
-		txaListado.setEditable(false);
+		
+		
 		ventana.add(txaListado);
+		txaListado.setEditable(false);
+		//txaListado.setPreferredSize(new Dimension(250, 20));
 		ventana.add(btnPdf);
+		btnPdf.setBackground(new Color(12, 128, 128));
+		
 		//Fijar que la ventana salga siempre en el medio
 		ventana.setLocationRelativeTo(null); 
 		ventana.setVisible(true); //Mostrarla

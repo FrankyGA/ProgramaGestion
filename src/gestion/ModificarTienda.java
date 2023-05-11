@@ -51,9 +51,13 @@ public class ModificarTienda implements WindowListener, ActionListener
 	ConexionVapers bd = new ConexionVapers();
 	ResultSet rs = null;
 
+	int tipoUsuario;
+	
 	//Constructor de modificar tienda
-	public ModificarTienda()
+	public ModificarTienda(int tipoUsuario)
 	{
+		
+		this.tipoUsuario= tipoUsuario;
 		//Listener para dar funcionalidad
 		ventana.addWindowListener(this);
 		btnEditar.addActionListener(this);
@@ -148,7 +152,7 @@ public class ModificarTienda implements WindowListener, ActionListener
 				//Conectar BD y sacar los datos de la tienda seleccionada
 				bd.conectar();
 				//Usamos método
-				rs = bd.consultarTienda(seleccionado[0]);
+				rs = bd.consultarTienda(seleccionado[0], tipoUsuario);
 				try
 				{
 					rs.next();
@@ -196,7 +200,8 @@ public class ModificarTienda implements WindowListener, ActionListener
 			bd.conectar();
 			//Metemos en resultado el valor del método pasandole 
 			//los datos del campo texto como parámetros
-			int resultado = bd.actualizarTienda(txtId.getText(), txtNombre.getText(), txtDireccion.getText());
+			int resultado = bd.actualizarTienda(txtId.getText(), txtNombre.getText(), txtDireccion.getText(), tipoUsuario);
+			
 			//Desconectamos de la BD
 			bd.desconectar();
 			//Usamos método para rellenar el choice

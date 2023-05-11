@@ -8,5 +8,20 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="driver/mysql-connector-j-8.0.31.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/barcodes-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/commons-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/font-asian-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/forms-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/hyph-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/io-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/kernel-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/layout-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/pdfa-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/pdftest-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/sign-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/slf4j-nop-1.7.25.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/styled-xml-parser-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/svg-7.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -4,6 +4,7 @@ import java.awt.Button;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Label;
@@ -38,17 +39,21 @@ public class BajaTienda implements WindowListener, ActionListener
 	ConexionVapers bd = new ConexionVapers();
 	//variable para guardar los datos
 	ResultSet rs = null;
+	
+	int tipoUsuario;
 
 	//Constructor de la clase
-	public BajaTienda()
-	{
+	public BajaTienda(int tipoUsuario){
+		
+		this.tipoUsuario=tipoUsuario;
+		
 		//Listener para dar funcionalidad
 		ventana.addWindowListener(this);
 		btnBorrar.addActionListener(this);
 		btnCancelar.addActionListener(this);
 
 		//Parámetros de la pantalla
-		ventana.setSize(280, 200); 
+		ventana.setSize(350, 200); 
 		//No Permitir redimensionar
 		ventana.setResizable(false); 
 
@@ -79,7 +84,9 @@ public class BajaTienda implements WindowListener, ActionListener
 		}
 		//Desconectar BD
 		bd.desconectar();
+		
 		ventana.add(choTiendas);
+		choTiendas.setPreferredSize(new Dimension(280, 20));
 		ventana.add(btnBorrar);
 		ventana.add(btnCancelar);
 		//Fijar que la ventana salga siempre en el medio
@@ -159,7 +166,7 @@ public class BajaTienda implements WindowListener, ActionListener
 			//Hacer el DELETE en la tabla guardando los datos en el array
 			String[] registros = choTiendas.getSelectedItem().split("-");
 			//Borrar los datos de ese registro por posición(id) usando el método
-			int resultado = bd.borrarTienda(Integer.parseInt(registros[0]));
+			int resultado = bd.borrarTienda(Integer.parseInt(registros[0]), tipoUsuario);
 			//Si el resultado es 0, borrado con éxito
 			if(resultado==0)
 			{

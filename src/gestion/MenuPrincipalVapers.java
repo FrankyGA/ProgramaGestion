@@ -3,6 +3,7 @@ package gestion;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.Label;
 //import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
@@ -34,18 +35,22 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 	MenuItem mniConsultaLiquidos = new MenuItem("Listado de liquidos");
 	MenuItem mniModificacionLiquido = new MenuItem("Modificar liquido");
 	
-	//Tabla Stock liquido tienda
+	//Tabla Stock liquidos en tiendas
 	Menu mnuStockLiquidos = new Menu("Stock de líquidos");
 	MenuItem mniAltaStockLiquido = new MenuItem("Nuevo stock");
 	MenuItem mniBajaStockLiquido = new MenuItem("Eliminar stock");
 	MenuItem mniConsultaStocksLiquido = new MenuItem("Listado de stocks");
 	MenuItem mniModificacionStockLiquido = new MenuItem("Modificar stock");
 	
-	//Label lblUsuario = new Label("XXXXXXXXXXXXXX");
+	int tipoUsuario;
+	Label lblUsuario= new Label("");//Usuario
 
 	//Se pasa el tipoUsuario metido en la base de datos para el control de las opciones de gestión.
 	public MenuPrincipalVapers(int tipoUsuario)
 	{
+		
+		this.tipoUsuario= tipoUsuario;
+		
 		//Listener para dar funcionalidad
 		ventana.addWindowListener(this);
 		
@@ -60,6 +65,12 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 		mniBajaLiquido.addActionListener(this);
 		mniConsultaLiquidos.addActionListener(this);
 		mniModificacionLiquido.addActionListener(this);
+		
+		//Funcionalidad a opciones de Stock
+		mniAltaStockLiquido.addActionListener(this);
+		mniBajaStockLiquido.addActionListener(this);
+		mniConsultaStocksLiquido.addActionListener(this);
+		mniModificacionStockLiquido.addActionListener(this);
 
 		//Crear ventana
 		ventana.setSize(330, 200);
@@ -118,6 +129,8 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 	public void windowClosing(WindowEvent we)
 	{
 		System.exit(0);
+		ConexionVapers bd= new ConexionVapers();
+		bd.guardarLog(tipoUsuario, "Logout");
 	}
 
 	@Override
@@ -129,57 +142,57 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 		{
 			/*Crea objeto de la clase y
 			entra en la clase Alta de tiendas*/
-			new AltaTienda();
+			new AltaTienda(tipoUsuario);
 		}
 		else if(evento.getSource().equals(mniBajaTienda))
 		{
-			new BajaTienda();
+			new BajaTienda(tipoUsuario);
 		}
 		else if(evento.getSource().equals(mniConsultaTiendas))
 		{
-			new ConsultaTiendas();
+			new ConsultaTiendas(tipoUsuario);
 		}
 		else if(evento.getSource().equals(mniModificacionTienda))
 		{
-			new ModificarTienda();
+			new ModificarTienda(tipoUsuario);
 		}
-		//Acciones para liquidos
+		//Acciones para líquidos
 		else if(evento.getSource().equals(mniAltaLiquido))
 		{
-			new AltaLiquido();
+			new AltaLiquido(tipoUsuario);
 		}
 		else if(evento.getSource().equals(mniBajaLiquido))
 		{
-			new BajaLiquido();
+			new BajaLiquido(tipoUsuario);
 		}
 		else if(evento.getSource().equals(mniConsultaLiquidos))
 		{
-			new ConsultaLiquidos();
+			new ConsultaLiquidos(tipoUsuario);
 		}
 		else if(evento.getSource().equals(mniModificacionLiquido))
 		{
-			new ModificarLiquido();
+			new ModificarLiquido(tipoUsuario);
 		}
-		/*
 		 //Acciones para Stock líquidos en tiendas
 		  else if(evento.getSource().equals(mniAltaStockLiquido))
 		{
-			new AltaStock();
-		}
-		else if(evento.getSource().equals(mniBajaStockLiquido))
-		{
-			new BajaStock();
+			new AltaStock(tipoUsuario);
 		}
 		else if(evento.getSource().equals(mniConsultaStocksLiquido))
 		{
-			new ConsultaStock();
+			new ConsultaStock(tipoUsuario);
 		}
+		
+		else if(evento.getSource().equals(mniBajaStockLiquido))
+		{
+			new BajaStock(tipoUsuario);
+		}
+		
 		else if(evento.getSource().equals(mniModificacionStockLiquido))
 		{
-			new ModificarStock();
+			new ModificarStock(tipoUsuario);
 		}
 		  
-		  */
 		//ventana.setVisible(false);//Quita el menú
 	}
 }

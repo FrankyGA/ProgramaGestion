@@ -52,10 +52,15 @@ public class ModificarLiquido implements WindowListener, ActionListener
 	ConexionVapers bd = new ConexionVapers();
 	
 	ResultSet rs = null;
+	
+	int tipoUsuario;
 
 	//Constructor de modificar tienda
-	public ModificarLiquido()
+	public ModificarLiquido(int tipoUsuario)
 	{
+		
+		this.tipoUsuario= tipoUsuario;
+		
 		//Listener para dar funcionalidad
 		ventana.addWindowListener(this);
 		btnEditar.addActionListener(this);
@@ -153,7 +158,7 @@ public class ModificarLiquido implements WindowListener, ActionListener
 				// Conectar BD y sacar los datos del líquido seleccionado
 				bd.conectar();
 				//Usamos método
-				rs = bd.consultarLiquido(seleccionado[0]);
+				rs = bd.consultarLiquido(seleccionado[0], tipoUsuario);
 				//System.out.println(rs);
 				try
 				{
@@ -205,7 +210,7 @@ public class ModificarLiquido implements WindowListener, ActionListener
 			bd.conectar();
 			//Metemos en resultado el valor del método pasandole 
 			//los datos del campo texto como parámetros
-			int resultado = bd.actualizarLiquido(txtId.getText(), txtMarca.getText(), txtModelo.getText(), txtCapacidad.getText());
+			int resultado = bd.actualizarLiquido(txtId.getText(), txtMarca.getText(), txtModelo.getText(), txtCapacidad.getText(), tipoUsuario);
 			//Desconectamos de la BD
 			bd.desconectar();
 			//Usamos método para rellenar el choice

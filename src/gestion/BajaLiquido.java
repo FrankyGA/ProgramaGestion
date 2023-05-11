@@ -4,6 +4,7 @@ import java.awt.Button;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Label;
@@ -36,12 +37,16 @@ public class BajaLiquido implements WindowListener, ActionListener
 	Label lblMensaje = new Label("XXXXXXXXXXXXXX");
 
 	ConexionVapers bd = new ConexionVapers();
-	//variable para guardar los datos
+	//Variable para guardar los datos
 	ResultSet rs = null;
 
+	int tipoUsuario;
+	
 	//Constructor de la clase
-	public BajaLiquido()
-	{
+	public BajaLiquido(int tipoUsuario){
+		
+		this.tipoUsuario=tipoUsuario;
+		
 		//Listener para dar funcionalidad
 		ventana.addWindowListener(this);
 		btnBorrar.addActionListener(this);
@@ -75,12 +80,13 @@ public class BajaLiquido implements WindowListener, ActionListener
 		} 
 		catch (SQLException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//Desconectar BD
 		bd.desconectar();
+		
 		ventana.add(choLiquidos);
+		choLiquidos.setPreferredSize(new Dimension(280, 20));
 		ventana.add(btnBorrar);
 		ventana.add(btnCancelar);
 		//Fijar que la ventana salga siempre en el medio
@@ -160,7 +166,7 @@ public class BajaLiquido implements WindowListener, ActionListener
 			//Hacer el DELETE en la tabla guardando los datos en el array
 			String[] registros = choLiquidos.getSelectedItem().split("-");
 			//Borrar los datos de ese registro por posición(id) usando el método
-			int resultado = bd.borrarLiquido(Integer.parseInt(registros[0]));
+			int resultado = bd.borrarLiquido(Integer.parseInt(registros[0]), tipoUsuario);
 			//Si el resultado es 0, borrado con éxito
 			if(resultado==0)
 			{

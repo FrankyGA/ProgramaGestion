@@ -37,10 +37,13 @@ public class AltaLiquido implements WindowListener, ActionListener
 	
 	//Creamos objeto conexión
 	ConexionVapers ConexionVapers = new ConexionVapers();
+	int tipoUsuario;
 
 	//Constructor de alta líquido
-	public AltaLiquido()
-	{
+	public AltaLiquido(int tipoUsuario){
+		
+		this.tipoUsuario = tipoUsuario;
+		
 		//Listener para dar funcionalidad
 		ventana.addWindowListener(this);
 		dlgMensaje.addWindowListener(this);
@@ -110,7 +113,7 @@ public class AltaLiquido implements WindowListener, ActionListener
 			//Hacer el INSERT con esos datos
 			String sentencia = "INSERT INTO tipoliquidos VALUES(null,'"+
 					marca+"','"+modelo+"','"+capacidad+"');";
-			int resultado = ConexionVapers.insertarLiquido(sentencia);
+			int resultado = ConexionVapers.insertarLiquido(sentencia, tipoUsuario);
 			System.out.println(sentencia);
 			
 			//If para controlar que los datos estén introducidos
