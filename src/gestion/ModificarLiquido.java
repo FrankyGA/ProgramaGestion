@@ -15,8 +15,8 @@ import java.awt.event.WindowListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ModificarLiquido implements WindowListener, ActionListener 
-{
+public class ModificarLiquido implements WindowListener, ActionListener {
+	
 	//Componentes de la ventana
 	Frame ventana = new Frame("Modificación de líquidos");
 	
@@ -56,8 +56,7 @@ public class ModificarLiquido implements WindowListener, ActionListener
 	int tipoUsuario;
 
 	//Constructor de modificar tienda
-	public ModificarLiquido(int tipoUsuario)
-	{
+	public ModificarLiquido(int tipoUsuario){
 		
 		this.tipoUsuario= tipoUsuario;
 		
@@ -89,8 +88,8 @@ public class ModificarLiquido implements WindowListener, ActionListener
 	}
 	
 	//Método para rellenar el listado
-	private void rellenarChoiceLiquidos() 
-	{
+	private void rellenarChoiceLiquidos(){
+		
 		choLiquidos.removeAll();
 		//Rellenar Choice
 		choLiquidos.add("Elegir líquido...");
@@ -99,11 +98,10 @@ public class ModificarLiquido implements WindowListener, ActionListener
 		//Sacar los datos de la tabla líquidos
 		rs=bd.rellenarLiquido();
 		//Registro a registro, meterlos en el Choice
-		try 
-		{
+		try {
 			//Mientras haya registros
-			while(rs.next())
-			{
+			while(rs.next()){
+				
 				//Añadimos al choice
 				choLiquidos.add(rs.getInt("idTipoLiquido")+" - "+
 				" Liquido: " + rs.getString("marcaLiquido")+ 
@@ -111,8 +109,7 @@ public class ModificarLiquido implements WindowListener, ActionListener
 				" capacidad: " + rs.getString("capacidadLiquido"));
 			}
 		} 
-		catch (SQLException e) 
-		{
+		catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -120,22 +117,17 @@ public class ModificarLiquido implements WindowListener, ActionListener
 		bd.desconectar();
 	}
 	
-	
 	public void windowActivated(WindowEvent we) {}
 	public void windowClosed(WindowEvent we) {}
 	//Funcionalidad de cerrar ventana
-	public void windowClosing(WindowEvent we)
-	{
-		if(dlgMensaje.isActive())
-		{
+	public void windowClosing(WindowEvent we){
+		if(dlgMensaje.isActive()){
 			dlgMensaje.setVisible(false);
 		}
-		else if(dlgEditar.isActive())
-		{
+		else if(dlgEditar.isActive()){
 			dlgEditar.setVisible(false);
 		}
-		else
-		{
+		else{
 			ventana.setVisible(false);
 		}
 	}
@@ -145,14 +137,11 @@ public class ModificarLiquido implements WindowListener, ActionListener
 	public void windowOpened(WindowEvent we) {}
 
 	@Override
-	public void actionPerformed(ActionEvent evento) 
-	{
+	public void actionPerformed(ActionEvent evento) {
 		//Si pulsamos en editar...
-		if(evento.getSource().equals(btnEditar))
-		{
+		if(evento.getSource().equals(btnEditar)){
 			//Si ha seleccionado algún elemento del choice que no sea...
-			if(!choLiquidos.getSelectedItem().equals("Elegir líquido..."))
-			{
+			if(!choLiquidos.getSelectedItem().equals("Elegir líquido...")){
 				//Metemos en un array de string los datos quitándole los guiones
 				String[] seleccionado = choLiquidos.getSelectedItem().split("-");
 				// Conectar BD y sacar los datos del líquido seleccionado
@@ -160,8 +149,7 @@ public class ModificarLiquido implements WindowListener, ActionListener
 				//Usamos método
 				rs = bd.consultarLiquido(seleccionado[0], tipoUsuario);
 				//System.out.println(rs);
-				try
-				{
+				try{
 					rs.next();
 					txtMarca.setText(rs.getString("marcaLiquido"));
 					txtModelo.setText(rs.getString("modeloLiquido"));
@@ -177,7 +165,7 @@ public class ModificarLiquido implements WindowListener, ActionListener
 				dlgEditar.setResizable(false);
 
 				dlgEditar.setLayout(new FlowLayout());
-				//ventana.setBackground(Color.green);
+				dlgEditar.setBackground(Color.gray);
 				
 				dlgEditar.add(lblCabecera2);
 				dlgEditar.add(lblId);

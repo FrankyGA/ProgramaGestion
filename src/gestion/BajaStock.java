@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Label;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -18,6 +19,7 @@ import java.sql.SQLException;
 public class BajaStock implements  WindowListener, ActionListener {
 	
 	Frame ventana = new Frame ("Baja de stock");
+	TextArea txaListado= new TextArea(10,67);
 	
 	//Creamos Choose para listado stocks
 	Label lblCabecera = new Label ("Elegir el stock a Borrar:");
@@ -41,8 +43,8 @@ public class BajaStock implements  WindowListener, ActionListener {
 	int tipoUsuario;
 
 	//Constructor de la clase
-	public BajaStock(int tipoUsuario)
-	{
+	public BajaStock(int tipoUsuario){
+		
 		this.tipoUsuario=tipoUsuario;
 		//Listener
 		ventana.addWindowListener(this);
@@ -51,37 +53,46 @@ public class BajaStock implements  WindowListener, ActionListener {
 		//Pantalla
 		ventana.setLayout(new FlowLayout());
 		ventana.setBackground(Color.orange);
+		
 		//Parámetros de la ventana
-		ventana.setSize(350,200);
+		ventana.setSize(530,360);
 		//No Permitir redimensionar
 		ventana.setResizable(false);
+		
 		ventana.add(lblCabecera);
-
+		
+		//Conectar
+		bd.conectar();
+		//Sacar la información y meterla en el TextArea
+		txaListado.setText(bd.consultaStock(tipoUsuario));
+		//Desconectar
+		bd.desconectar();
+				
+		ventana.add(txaListado);
+		txaListado.setEditable(false);
+				
 		//Rellenar el Choice cabecera
-		choStocks.add("Seleccionar un stock...");
+		choStocks.add("Seleccionar un stock por índice...");
 		// Conectar BD
 		bd.conectar();
 		//Sacar los datos de la tabla stocks y rellenar choice
 		rs=bd.rellenarStock();
 		//Registro a registro, meterlos en el Choice con formato
-		try
-		{
-			while (rs.next())
-			{
+		try{
+			//Mientras haya registros...
+			while (rs.next()){
+				//Añadimos al choice
 				choStocks.add(rs.getInt("idTipoLiquidoTienda") + "-" + 
-				"-" + rs.getString("stockLiquido")+ "-" +
-				"-" + rs.getInt("idTiendaFk")+ "-" +
+				"-" + rs.getString("stockLiquido") + "-" +
+				"-" + rs.getInt("idTiendaFk") + "-" +
 				"-" + rs.getInt("idTipoLiquidoFk"));
-
 			}
 		}
-		catch (SQLException e) 
-		{
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		//Sacar los datos de la tabla personas
-		// Registro a registro, meteros en el choice
+		//Registro a registro, meteros en el choice
 		//Desconectar la base de datos
 		bd.desconectar();
 		ventana.add(choStocks);
@@ -91,38 +102,41 @@ public class BajaStock implements  WindowListener, ActionListener {
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
 	}
-	public void actionPerformed(ActionEvent evento)
-	{
-		if (evento.getSource().equals(btnBorrar))
-		{
-			if ((choStocks.getSelectedItem().equals("Seleccionar el stock...")))
-			{
+	public void actionPerformed(ActionEvent evento){
+		
+		//Si el usuario elige registro y pulsa en botón borrar
+		if (evento.getSource().equals(btnBorrar)){
+			//Si la elección del choice es igual a...
+			if ((choStocks.getSelectedItem().equals("Seleccionar el stock..."))){
 				lblMensaje.setText("Debes seleccionar un stock");
 				mostrarMensaje();
 			}
-			else
-			{
+			else{
 				mostrarDialogoConfirmacion();
 			}
 		}
-		else if (evento.getSource().equals(btnNo))
-		{
+		//Si el usuario deniega el borrado
+		else if (evento.getSource().equals(btnNo)){
+			
 			dlgConfirmacion.setVisible(false);
 		}
-		else if (evento.getSource().equals(btnSi))
-		{
+		//Si el usuario confirma el borrado
+		else if (evento.getSource().equals(btnSi)){
+			
 			bd.conectar();
 			String[] array = choStocks.getSelectedItem().split("-");
 			int resultado= bd.borrarStock(Integer.parseInt(array[0]), tipoUsuario);
 			
-			if (resultado == 0)
-			{
+			//Borrado correcto
+			if (resultado == 0){
+				
 				lblMensaje.setText("Borrado con éxito");
 				dlgConfirmacion.setVisible(false);
 				mostrarMensaje();
 			}
-			else
-			{
+			//Error en borrado
+			else{
+				
 				lblMensaje.setText("Error en borrado");
 				mostrarMensaje();
 			}
@@ -132,8 +146,8 @@ public class BajaStock implements  WindowListener, ActionListener {
 
 	}
 	//Creamos método de borrado correcto
-	private void mostrarMensaje()
-	{
+	private void mostrarMensaje(){
+		
 		dlgMensaje.setLayout(new FlowLayout());
 		dlgMensaje.setSize(350,100);
 		dlgMensaje.addWindowListener(this);
@@ -146,8 +160,8 @@ public class BajaStock implements  WindowListener, ActionListener {
 	}
 	
 	//Creamos método para preguntar al usuario
-	private void mostrarDialogoConfirmacion()
-	{
+	private void mostrarDialogoConfirmacion(){
+		
 		//Mostrar el diálogo de confirmación
 		//Listeners
 		dlgConfirmacion.addWindowListener(this);
@@ -165,28 +179,29 @@ public class BajaStock implements  WindowListener, ActionListener {
 		dlgConfirmacion.setLocationRelativeTo(null);
 		dlgConfirmacion.setVisible(true);
 	}
+	
 	@Override
-	public void windowOpened(WindowEvent e){}
-	@Override
-	public void windowClosing(WindowEvent e)
-	{
+	public void windowClosing(WindowEvent e){
 
 		//Si el diálogo confirmación esta activo, ese es el que hay que ocultar
-		if(dlgMensaje.isActive())
-		{
+		if(dlgMensaje.isActive()){
+			
 			dlgMensaje.setVisible(false);
 		}
 		//Si el diálogo mensaje esta activo, ese es el que hay que ocultar
-		else if(dlgConfirmacion.isActive())
-		{
+		else if(dlgConfirmacion.isActive()){
+			
 			dlgConfirmacion.setVisible(false);
 		}
 		//Si ninguno esta activo, se oculta la ventana
-		else
-		{
+		else{
+			
 			ventana.setVisible(false);
 		}
 	}
+	
+	@Override
+	public void windowOpened(WindowEvent e){}
 	@Override
 	public void windowClosed(WindowEvent e){}
 	@Override

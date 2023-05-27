@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Label;
+import java.awt.TextArea;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,32 +20,38 @@ public class ModificarStock implements  WindowListener, ActionListener {
 
 	Frame ventana = new Frame ("Modificar stocks");
 	
+	TextArea txaListado= new TextArea(10,67);
+	
 	Label lblCabecera = new Label ("Elegir stock");
 	
+	//Campo para añadir el nuevo stock
 	Label lblStock= new Label("Nuevo stock");
-	TextField txtStock = new TextField(15);
+	TextField txtStock = new TextField(20);
 	
+	//Creamos los 3 choice
 	Choice choStocks = new Choice();
 	Choice choTiendas = new Choice();
 	Choice choLiquidos = new Choice();
 	
-	Dialog dlgEditar= new Dialog (ventana,"Edición Clientes", true);
+	//Creamos los diálogos
+	//Dialog dlgEditar= new Dialog (ventana,"Edición stocks", true);
 	Dialog dlgModificar = new Dialog(ventana,"Modificación", true);
+	Dialog dlgMensaje = new Dialog(ventana,"Mensaje", true);
+	Label lblMensaje = new Label("Modificación correcta");
 	
+	//Creamos los botones
 	Button btnModificar = new Button("Modificar");
-	Button btnModificar2 = new Button("Modificar2");
+	Button btnAceptar = new Button("Aceptar");
 	Button btnSi = new Button("Sí");
 	Button btnNo = new Button("No");
 	Button btnCancelar= new Button("cancelar");
 	
-	Dialog dlgMensaje = new Dialog(ventana,"Mensaje", true);
-	Label lblMensaje = new Label("Modificación correcta");
-
 	ConexionVapers bd = new ConexionVapers();
 	
 	ResultSet rs = null;
 	ResultSet rs2 = null;
 	
+	//Variables para guardar datos
 	int idTipoLiquidoTienda = 0;
 	int idTienda = 0;
 	int idTipoLiquido = 0;
@@ -53,34 +60,44 @@ public class ModificarStock implements  WindowListener, ActionListener {
 	
 	int tipoUsuario;
 
-	//Constructor
+	//Constructor de stock, pasamos tipo usuario por parámetro
 	public 	ModificarStock( int tipoUsuario){
 
 		this.tipoUsuario=tipoUsuario;
 		
-		//Listener
+		//Añadimos listener
 		ventana.addWindowListener(this);
 		btnModificar.addActionListener(this);
 
 		//Pantalla
 		ventana.setLayout(new FlowLayout());
 		ventana.setBackground(Color.orange);
-		ventana.setSize(300,200);
+		ventana.setSize(530,360);
 		ventana.setResizable(false);
 		ventana.add(lblCabecera);
-
+		
+		//Sacamos los datos de la BD
+		//Conectar
+		bd.conectar();		
+		//Sacar la información y meterla en el TextArea
+		txaListado.setText(bd.consultaStock(tipoUsuario));
+		//Desconectar
+		bd.desconectar();
+		
+		//Añadimos listado
+		ventana.add(txaListado);
+		txaListado.setEditable(false);
 		//Rellenar el Choice cabecera
-		choStocks.add("Seleccionar un stock...");
+		choStocks.add("Seleccionar un stock por índice...");
+		
 		//Conectar BD
 		bd.conectar();
 		//Sacar los datos de la tabla stocks y rellenar choice
 		rs=bd.rellenarStock();
 		
-		try
-		{
+		try{
 			//Mientras haya registros...
-			while (rs.next())
-			{
+			while (rs.next()){
 				//Añadimos al choice
 				choStocks.add(rs.getInt("idTipoLiquidoTienda") + "-" + 
 				"-" + rs.getString("stockLiquido")+ "-" +
@@ -88,55 +105,60 @@ public class ModificarStock implements  WindowListener, ActionListener {
 				"-" + rs.getInt("idTipoLiquidoFk"));
 			}
 		}
-		catch (SQLException e) 
-		{
+		catch (SQLException e){
 			e.printStackTrace();
 		}
 
 		//Registro a registro, meteros en el choice
 		//Desconectar la base de datos
 		bd.desconectar();
+		
+		//Añadimos el choice y el botón modificar a la primera ventana
 		ventana.add(choStocks);
+		choStocks.setPreferredSize(new Dimension(280, 20));
 		ventana.add(btnModificar);
-
+		
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
-
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent evento) {
 
-
-		//Si pulsamos en Editar
-		if(evento.getSource().equals(btnModificar))
-		{
-			if (choStocks.getSelectedItem().equals("Seleccionar un stock..."))
-			{
+		//Si pulsamos en modificar
+		if(evento.getSource().equals(btnModificar)){
+			
+			//Si no selecciona nada, mostrar aviso
+			if (choStocks.getSelectedItem().equals("Seleccionar un stock...")){
+				
 				lblMensaje.setText("Debes seleccionar un stock");
 				mostrarMensaje();
 			}
-			else
-			{
+			//Si selecciona algo
+			else{
+				//Sacamos los datos del choice quitando guiones
 				String[] seleccionado=choStocks.getSelectedItem().split("-");
 				
 				bd.conectar();
+				//Guardamos el id
 				rs=bd.consultarStock(seleccionado[0], tipoUsuario);
+				
 				try {   
-				rs.next();
-				idTipoLiquidoTienda= rs.getInt("idTipoLiquidoTienda");
-				txtStock.setText(rs.getString("stock"));
-				fkTienda = rs.getInt("idTiendaFk");
-				fkLiquido = rs.getInt("idtipoLiquidoFk");
-
+					//Guardamos datos 
+					rs.next();
+					idTipoLiquidoTienda= rs.getInt("idTipoLiquidoTienda");
+					txtStock.setText(rs.getString("stock"));
+					fkTienda = rs.getInt("idTiendaFk");
+					fkLiquido = rs.getInt("idtipoLiquidoFk");
 				}
-				catch (SQLException sqle)
-				{}	
+				
+				catch (SQLException sqle){}	
 
 				bd.desconectar();
 				
 				//------------------------------------------Tabla tiendas---------------------------------------//
 				
+				//Quitamos todo del choice
 				choTiendas.removeAll();
 				// Rellenar el Choice
 				choTiendas.add("Elegir tienda");
@@ -147,23 +169,27 @@ public class ModificarStock implements  WindowListener, ActionListener {
 
 				int posicionTienda=0;
 				int i=1;
+				
 				try{ 
+					//Metemos datos en el choice
 					while (rs.next()){
 						
 						choTiendas.add(rs.getInt("idTienda")+"-"+
 						"-" + rs.getString("nombreTienda")+ "-" +
 						"-" + rs.getString("direccionTienda"));
 						
+						//Si el fk guardado es igual al id de la tienda
+						//Si el valor del fkTienda coincide con el id de una tienda en rs, se guarda la posición.
 						if (fkTienda == rs.getInt("idTienda")) {
 							posicionTienda=i;
 						}
 						i++;
 					}
 				}
-				catch(Exception e)
-				{
+				catch(Exception e){
 					System.out.println(e.getMessage());
 				}
+				//Posiciona dentro del choice
 				choTiendas.select(posicionTienda);
 
 				//Desconectar la base de datos
@@ -171,6 +197,7 @@ public class ModificarStock implements  WindowListener, ActionListener {
 				
 				//------------------------------------------Tabla líquidos---------------------------------------//
 				
+				//Quitamos todo del choice
 				choLiquidos.removeAll();
 				// Rellenar el Choice
 				choLiquidos.add("Elegir líquido");
@@ -181,21 +208,19 @@ public class ModificarStock implements  WindowListener, ActionListener {
 
 				int posicionLiquido=0;
 				int j=1;
-				try
-				{ 
-
-					while (rs.next())
-					{
+				try{ 
+					//Metemos datos en el choice
+					while (rs.next()){
 
 						choLiquidos.add(rs.getInt("idTipoLiquido")+"-"+
 						"-" + rs.getString("marcaLiquido")+ "-" + 
 						"-" + rs.getString("modeloLiquido")+ "-" +
 						"-" + rs.getString("capacidadLiquido"));
-
+						//Si el fk guardado es igual al id del líquido
+						//Si el valor del fkLiquido coincide con el id de un líquidoa en rs, se guarda la posición.
 						if (fkLiquido==rs.getInt("idTipoLiquido")) {
 
 							posicionLiquido=j;
-
 						}
 						j++;
 					}
@@ -204,21 +229,23 @@ public class ModificarStock implements  WindowListener, ActionListener {
 				{
 					System.out.println(e.getMessage());
 				}
+				//Posiciona dentro del choice
 				choLiquidos.select(posicionLiquido);
 
-				//Registro a registro, meteros en el choice
 				//Desconectar la base de datos
 				bd.desconectar();
 				
-				//Montar la ventana Modificación
+				//------------------------------Montar la ventana Modificación----------------------------//
 				dlgModificar.setLayout(new FlowLayout());
-				dlgModificar.setSize(320,200); //ancho , alto
+				dlgModificar.setBackground(Color.gray);
+				dlgModificar.setSize(330,200);
 				
+				//dlgModificar.add(txaListado);
 				dlgModificar.add(choTiendas);
 				dlgModificar.add(choLiquidos);
 				dlgModificar.add(lblStock);
 				dlgModificar.add(txtStock);
-				dlgModificar.add(btnModificar2);
+				dlgModificar.add(btnAceptar);
 				dlgModificar.add(btnCancelar);
 				choTiendas.setPreferredSize(new Dimension(280, 20));
 				choLiquidos.setPreferredSize(new Dimension(280, 20));
@@ -226,23 +253,21 @@ public class ModificarStock implements  WindowListener, ActionListener {
 				//Listener
 				dlgModificar.addWindowListener(this);
 				btnModificar.addActionListener(this);
-				btnModificar2.addActionListener(this);
+				btnAceptar.addActionListener(this);
 				btnCancelar.addActionListener(this);
 
 				//mostrar en pantalla
-				dlgModificar.setResizable(true);
+				dlgModificar.setResizable(false);
 				dlgModificar.setLocationRelativeTo(null);
 				dlgModificar.setVisible(true);
 			}
 		}
 		//Botón cancelar muestra ventana principal
-		else if(evento.getSource().equals(btnCancelar))
-		{
-			ventana.setVisible(false);
+		else if(evento.getSource().equals(btnCancelar)){
+			dlgModificar.setVisible(false);
 		}
 		//botón modificar si todo va bien indicamos qué hacer
-		else if(evento.getSource().equals(btnModificar2))
-		{
+		else if(evento.getSource().equals(btnAceptar)){
 
 			bd.conectar();
 
@@ -259,14 +284,12 @@ public class ModificarStock implements  WindowListener, ActionListener {
 			int idTipoLiquidoFk = Integer.parseInt(seleccionado1[0]);
 
 			//Si la modificación ha sido correcta
-			if ((bd.actualizarStock(idTipoLiquidoTienda, txtStock.getText(), idTipoLiquidoFk, idTiendaFk, tipoUsuario)==0))
-			{
+			if ((bd.actualizarStock(idTipoLiquidoTienda, txtStock.getText(), idTipoLiquidoFk, idTiendaFk, tipoUsuario)==0)){
 				//Si todo bien
 				lblMensaje.setText("Modificación correcta");
 			}
 			//Sino mostrar mensaje de error
-			else
-			{
+			else{
 				lblMensaje.setText("Modificación errónea");
 			}
 			//Desconectar la base
@@ -276,33 +299,33 @@ public class ModificarStock implements  WindowListener, ActionListener {
 		}
 	}		
 
-	private void mostrarMensaje()
-	{
+	//Método para mensaje de confirmación
+	private void mostrarMensaje(){
 		dlgMensaje.setLayout(new FlowLayout());
-		dlgMensaje.setSize(300,200);
+		dlgMensaje.setSize(180,75);
 		dlgMensaje.addWindowListener(this);
+		dlgMensaje.setResizable(false);
 		dlgMensaje.add(lblMensaje);
 		dlgMensaje.setLocationRelativeTo(null);
 		dlgMensaje.setVisible(true);
-		//dlgConfirmacion.setVisible(false);
 	}
-
-	@Override
-	public void windowOpened(WindowEvent e) {}
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		if (dlgMensaje.isActive())
-		{
+		
+		if (dlgMensaje.isActive()){
 			dlgMensaje.setVisible(false);
 		}
-
-		else
-		{
+		else if(dlgModificar.isActive()){
+			dlgModificar.setVisible(false);
+		}
+		else{
 			ventana.setVisible(false);
 		}
 	}
-
+	
+	@Override
+	public void windowOpened(WindowEvent e) {}
 	@Override
 	public void windowClosed(WindowEvent e) {}
 	@Override

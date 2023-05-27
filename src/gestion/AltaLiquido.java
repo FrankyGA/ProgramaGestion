@@ -113,8 +113,9 @@ public class AltaLiquido implements WindowListener, ActionListener
 			//Hacer el INSERT con esos datos
 			String sentencia = "INSERT INTO tipoliquidos VALUES(null,'"+
 					marca+"','"+modelo+"','"+capacidad+"');";
+			
 			int resultado = ConexionVapers.insertarLiquido(sentencia, tipoUsuario);
-			System.out.println(sentencia);
+			//System.out.println(sentencia);
 			
 			//If para controlar que los datos estén introducidos
 			if(txtMarca.getText().length()==0||txtModelo.getText().length()==0||txtCapacidad.getText().length()==0) {

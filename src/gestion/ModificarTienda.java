@@ -169,7 +169,7 @@ public class ModificarTienda implements WindowListener, ActionListener
 				dlgEditar.setResizable(false);
 
 				dlgEditar.setLayout(new FlowLayout());
-				//ventana.setBackground(Color.yellow);
+				dlgEditar.setBackground(Color.gray);
 				
 				dlgEditar.add(lblCabecera2);
 				dlgEditar.add(lblId);

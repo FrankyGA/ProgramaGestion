@@ -146,6 +146,34 @@ public class ConexionVapers
 		return(contenido);
 	}
 	
+	//Método para consultar datos de tabla tiendas y crear pdf
+	public String consultarTiendasPDF()
+	{
+		String contenido = "";
+		//ResultSet para guardar los datos obtenidos en la base de datos
+		ResultSet rs = null; 
+		try
+		{
+			//Crear una sentencia
+			statement = connection.createStatement();
+			//y ejecutar la sentencia SQL . Para ejecutar el SELECT (se usa el executeQuery)
+			rs = statement.executeQuery("SELECT * FROM tiendas");
+			
+			while(rs.next()) //Si hay, al menos uno
+			{
+				//Sacamos los siguientes datos
+				//En getString o getInt también se puede poner un número que indica posición
+				contenido = contenido + 
+				rs.getInt("idTienda")+"\t"+  
+				rs.getString("nombreTienda") + "\t" + 
+				rs.getString("direccionTienda") +"\n";
+			}
+		}
+		catch (SQLException sqle)
+		{}
+		return(contenido);
+	}
+	
 	//Método para insertar datos tabla tiendas
 	public int insertarTienda(String sentencia, int tipoUsuario)
 	{
@@ -287,6 +315,35 @@ public class ConexionVapers
 		return(contenido);
 	}
 	
+	//Método para consultar datos de tabla líquidos y crear pdf
+	public String consultarLiquidosPDF()
+	{
+		String contenido = "";
+		//ResultSet para guardar los datos obtenidos en la base de datos
+		ResultSet rs = null; 
+		try
+		{
+			//Crear una sentencia
+			statement = connection.createStatement();
+			//y ejecutar la sentencia SQL . Para ejecutar el SELECT (se usa el executeQuery)
+			rs = statement.executeQuery("SELECT * FROM tipoliquidos");
+			
+			while(rs.next()) //Si hay, al menos uno
+			{
+				//Sacamos los siguientes datos
+				//En getString o getInt también se puede poner un número que indica posición
+				contenido = contenido + 
+				rs.getInt("idTipoLiquido")+"\t"+  
+				rs.getString("marcaLiquido") + "\t" + 
+				rs.getString("modeloLiquido") + "\t"+ 
+				rs.getString("capacidadLiquido") +"\n";
+			}
+		}
+		catch (SQLException sqle)
+		{}
+		return(contenido);
+	}
+	
 	//Método para insertar datos tabla líquidos
 	public int insertarLiquido(String sentencia, int tipoUsuario)
 	{
@@ -404,8 +461,37 @@ public class ConexionVapers
 
 			while(rs.next())// Si hay almenos uno
 			{
-				contenido=contenido+"Número Stock: "+rs.getInt("idTipoLiquidoTienda")+", Tienda: "+ rs.getString("nombreTienda") +", Marca líquido: "+ rs.getString("marcaLiquido")
+				contenido=contenido+"Índice Stock: "+rs.getInt("idTipoLiquidoTienda")+", Tienda: "+ rs.getString("nombreTienda") +", Marca líquido: "+ rs.getString("marcaLiquido")
 						+ ", modelo: " + rs.getString("modeloLiquido") + ", Stock: " + rs.getString("stockLiquido") + "\n";	
+			}
+		}
+		catch (SQLException sqle){}
+		return(contenido);
+	}
+	
+	//Método para consultar datos de tabla tiendas y crear pdf
+	public String consultarStockPDF() {
+		
+		String contenido="";
+		ResultSet rs= null;
+
+		try
+		{
+			// Crear una sentencia
+			statement = connection.createStatement();
+			// Crear un objeto ResultSet para guardar lo obtenido
+			// y ejecutar la sentencia SQL
+			rs = statement.executeQuery("SELECT * FROM tipoliquidotienda JOIN tiendas on idTiendaFk=idtienda "+
+			"JOIN tipoliquidos on idtipoLiquidoFk=idtipoLiquido"); 
+			
+			while(rs.next())// Si hay almenos uno
+			{
+				contenido=contenido + 
+				rs.getInt("idTipoLiquidoTienda") + "\t"+
+				rs.getString("nombreTienda") + "\t"+
+				rs.getString("marcaLiquido") + "\t"+
+				rs.getString("modeloLiquido") + "\t"+
+				rs.getString("stockLiquido") + "\n";	
 			}
 		}
 		catch (SQLException sqle){}

@@ -16,6 +16,11 @@ import java.awt.event.WindowListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/*La clase "AltaStock" representa una interfaz gráfica de usuario para agregar información 
+ * de stock relacionada con tiendas y líquidos a una base de datos. 
+ * Proporciona interacciones con el usuario a través de componentes gráficos y realiza consultas
+ *  y actualizaciones en la base de datos según las acciones del usuario.*/
+
 public class AltaStock implements WindowListener, ActionListener
 {
 	Frame ventana = new Frame("Nuevo Stock");
@@ -32,7 +37,7 @@ public class AltaStock implements WindowListener, ActionListener
 	Button btnAceptar = new Button("Aceptar");
 	Button btnLimpiar = new Button("Limpiar");
 	
-	Dialog dlgFeedback = new Dialog(ventana, "Mensaje", true);
+	Dialog dlgMensaje = new Dialog(ventana, "Mensaje", true);
 	Label lblMensaje = new Label("XXXXXXXXXXXXXXX");
 	
 	ConexionVapers bd = new ConexionVapers();
@@ -44,6 +49,8 @@ public class AltaStock implements WindowListener, ActionListener
 	
 	int tipoUsuario;
 
+	/*Este constructor inicializa los componentes de la interfaz gráfica, 
+	 * establece sus propiedades y agrega controladores de eventos.*/
 	public AltaStock(int tipoUsuario){
 		
 		this.tipoUsuario=tipoUsuario;
@@ -60,49 +67,45 @@ public class AltaStock implements WindowListener, ActionListener
 		
 		bd.conectar();
 		
+		//-------------------------Sacar los datos de la tabla tiendas----------------------------//
 		ventana.add(lblChoiceTienda);
-		
 		ventana.add(choTiendas);
-		//Sacar los datos de la tabla tiendas
+		
 		rs = bd.rellenarTienda();
 		
-		//Meterl en el Choice
-		try
-		{
-			while(rs.next())
-			{
+		//Meter los datos en el Choice separados con guiones
+		try{
+			while(rs.next()){
 				choTiendas.add(rs.getInt("idTienda")
-						+ "-" + rs.getString("nombreTienda")
-						+ "-" + rs.getString("direccionTienda"));
-
+				+ "-" + rs.getString("nombreTienda")
+				+ "-" + rs.getString("direccionTienda"));
 			}
 		} catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
 		
+		//-------------------------Sacar los datos de la tabla líquidos----------------------------//
 		ventana.add(lblChoiceLiquido);
 		ventana.add(choLiquidos);
-		//Sacar los datos de la tabla líquidos
+		
 		rs = bd.rellenarLiquido();
-		//Meterlo en el Choice
-		try
-		{
-			while(rs.next())
-			{
+		//Meter los datos en el Choice separados con guiones
+		try{
+			while(rs.next()){
 				choLiquidos.add(rs.getInt("idTipoLiquido")
-						+ "-" + rs.getString("marcaLiquido")
-						+ "-" + rs.getString("modeloLiquido")
-						+ "-" + rs.getString("capacidadLiquido"));
-
+				+ "-" + rs.getString("marcaLiquido")
+				+ "-" + rs.getString("modeloLiquido")
+				+ "-" + rs.getString("capacidadLiquido"));
 			}
-		} catch (SQLException e)
-		{
+		} 
+		
+		catch (SQLException e){
 			e.printStackTrace();
 		}
 		
-		
 		bd.desconectar();
+		
 		btnAceptar.addActionListener(this);
 		btnLimpiar.addActionListener(this);
 		
@@ -114,40 +117,32 @@ public class AltaStock implements WindowListener, ActionListener
 		ventana.setVisible(true);
 		ventana.setResizable(false);
 	}
+	
 	@Override
-	public void actionPerformed(ActionEvent evento)
-	{
-		if(evento.getSource().equals(btnLimpiar))
-		{
+	public void actionPerformed(ActionEvent evento){
+		
+		//Si pulsamos en limpiar, limpiamos campos
+		if(evento.getSource().equals(btnLimpiar)){
 			limpiar();
 		}
-		else if(evento.getSource().equals(btnAceptar))
-		{
+		//Si pulsamos en aceptar
+		else if(evento.getSource().equals(btnAceptar)){
 			bd.conectar();
-			
-			
+				//Metemos los datos en un array sin el guión
 				String[] liquidos = choLiquidos.getSelectedItem().split("-");
+				//Sacamos el índice
 				idTipoLiquidoFk = Integer.parseInt(liquidos[0]);
+				//Metemos los datos en un array sin el guión
 				String[] tiendas = choTiendas.getSelectedItem().split("-");
+				//Sacamos el índice
 				idTiendaFk = Integer.parseInt(tiendas[0]);
-			
 				
+				//Sacamos datos de número de stock introducido
 				String stockLiquidoString = txtStock.getText();
 				stockLiquido = Integer.parseInt(stockLiquidoString);
+				//Aplicamos método de insertar con los datos
 				int resultado = bd.insertarStock(stockLiquido, idTipoLiquidoFk, idTiendaFk, tipoUsuario);
 				
-				/*String stockLiquidoString = txtStock.getText();
-				int stockLiquido = Integer.parseInt(stockLiquidoString);
-			
-				String sentencia = "INSERT INTO tipoliquidotienda VALUES(null, " 
-		                  + stockLiquido + ", "
-		                  + idTipoLiquidoFk + ", "
-		                  + idTiendaFk + ");";
-				System.out.println(sentencia);
-			
-				int resultado = bd.insertarStock(sentencia,  tipoUsuario);*/
-			
-					
 			if(txtStock.getText().length()==0) {
 				lblMensaje.setText("El campo está vacio");
 			}
@@ -166,16 +161,14 @@ public class AltaStock implements WindowListener, ActionListener
 		}
 	}
 	@Override
-	public void windowOpened(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-	}
+	public void windowOpened(WindowEvent e){}
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
-		if(dlgFeedback.isActive())
+		if(dlgMensaje.isActive())
 		{
-			dlgFeedback.setVisible(false);
+			dlgMensaje.setVisible(false);
+			limpiar();
 		}
 		else
 		{
@@ -183,45 +176,43 @@ public class AltaStock implements WindowListener, ActionListener
 		}
 	}
 	@Override
-	public void windowClosed(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-	}
+	public void windowClosed(WindowEvent e){}
 	@Override
-	public void windowIconified(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-	}
+	public void windowIconified(WindowEvent e){}
 	@Override
-	public void windowDeiconified(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-	}
+	public void windowDeiconified(WindowEvent e){}
 	@Override
-	public void windowActivated(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-	}
+	public void windowActivated(WindowEvent e){}
 	@Override
-
-	public void windowDeactivated(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-	}
+	public void windowDeactivated(WindowEvent e){}
+	
+	//Método para lanzar diálogo
 	public void mostrarDialogo()
 	{
-		dlgFeedback.setLayout(new FlowLayout());
-		dlgFeedback.addWindowListener(this);
-		dlgFeedback.add(lblMensaje);
-		dlgFeedback.setSize(150,80);
-		dlgFeedback.setResizable(false);
-		dlgFeedback.setLocationRelativeTo(null);
-		dlgFeedback.setVisible(true);
+		dlgMensaje.setLayout(new FlowLayout());
+		dlgMensaje.addWindowListener(this);
+		dlgMensaje.add(lblMensaje);
+		dlgMensaje.setSize(150,80);
+		dlgMensaje.setResizable(false);
+		dlgMensaje.setLocationRelativeTo(null);
+		dlgMensaje.setVisible(true);
 	}
+	
+	//Método para limpiar campos
 	public void limpiar()
 	{
 		txtStock.setText("");
 		txtStock.requestFocus();
 	}
-
 }
+
+/*String stockLiquidoString = txtStock.getText();
+int stockLiquido = Integer.parseInt(stockLiquidoString);
+
+String sentencia = "INSERT INTO tipoliquidotienda VALUES(null, " 
+          + stockLiquido + ", "
+          + idTipoLiquidoFk + ", "
+          + idTiendaFk + ");";
+System.out.println(sentencia);
+
+int resultado = bd.insertarStock(sentencia,  tipoUsuario);*/

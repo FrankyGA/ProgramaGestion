@@ -23,5 +23,11 @@
 	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/slf4j-nop-1.7.25.jar"/>
 	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/styled-xml-parser-7.2.1.jar"/>
 	<classpathentry kind="lib" path="D:/Apuntes/Tercer trimestre/Programacion 3/Tema 10 juego/iText7-Core-7.2.1-only-jars/svg-7.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Segundo trimestre/Programacion/Practica Juego/librerias excel/commons-collections4-4.4.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Segundo trimestre/Programacion/Practica Juego/librerias excel/commons-compress-1.19.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Segundo trimestre/Programacion/Practica Juego/librerias excel/poi-4.1.2.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Segundo trimestre/Programacion/Practica Juego/librerias excel/poi-ooxml-4.1.2.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Segundo trimestre/Programacion/Practica Juego/librerias excel/poi-ooxml-schemas-4.1.2.jar"/>
+	<classpathentry kind="lib" path="D:/Apuntes/Segundo trimestre/Programacion/Practica Juego/librerias excel/xmlbeans-3.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

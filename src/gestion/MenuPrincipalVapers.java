@@ -19,7 +19,7 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 	Frame ventana = new Frame("Menú Tiendas de Vapers");
 	//Creamos Menú
 	MenuBar barraMenu = new MenuBar();
-	
+
 	//Menú CRUD
 	//Tabla tiendas
 	Menu mnuTiendas = new Menu("Tiendas"); 
@@ -27,50 +27,56 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 	MenuItem mniBajaTienda = new MenuItem("Eliminar tienda");
 	MenuItem mniConsultaTiendas = new MenuItem("Listado de tiendas");
 	MenuItem mniModificacionTienda = new MenuItem("Modificar tienda");
-	
+
 	//Tabla líquidos
 	Menu mnuLiquidos = new Menu("Líquidos");
 	MenuItem mniAltaLiquido = new MenuItem("Nuevo liquido");
 	MenuItem mniBajaLiquido = new MenuItem("Eliminar liquido");
 	MenuItem mniConsultaLiquidos = new MenuItem("Listado de liquidos");
 	MenuItem mniModificacionLiquido = new MenuItem("Modificar liquido");
-	
+
 	//Tabla Stock liquidos en tiendas
 	Menu mnuStockLiquidos = new Menu("Stock de líquidos");
 	MenuItem mniAltaStockLiquido = new MenuItem("Nuevo stock");
 	MenuItem mniBajaStockLiquido = new MenuItem("Eliminar stock");
 	MenuItem mniConsultaStocksLiquido = new MenuItem("Listado de stocks");
 	MenuItem mniModificacionStockLiquido = new MenuItem("Modificar stock");
-	
+
+	//Menú para ayuda
+	Menu mnuAyuda = new Menu("Ayuda");
+	MenuItem mniAyuda = new MenuItem("Ayuda");
+
 	int tipoUsuario;
 	Label lblUsuario= new Label("");//Usuario
 
 	//Se pasa el tipoUsuario metido en la base de datos para el control de las opciones de gestión.
-	public MenuPrincipalVapers(int tipoUsuario)
-	{
-		
+	public MenuPrincipalVapers(int tipoUsuario){
+
 		this.tipoUsuario= tipoUsuario;
-		
+
 		//Listener para dar funcionalidad
 		ventana.addWindowListener(this);
-		
+
 		//Funcionalidad a opciones de Tienda
 		mniAltaTienda.addActionListener(this);
 		mniBajaTienda.addActionListener(this);
 		mniConsultaTiendas.addActionListener(this);
 		mniModificacionTienda.addActionListener(this);
-		
+
 		//Funcionalidad a opciones de Tipo de líquido
 		mniAltaLiquido.addActionListener(this);
 		mniBajaLiquido.addActionListener(this);
 		mniConsultaLiquidos.addActionListener(this);
 		mniModificacionLiquido.addActionListener(this);
-		
+
 		//Funcionalidad a opciones de Stock
 		mniAltaStockLiquido.addActionListener(this);
 		mniBajaStockLiquido.addActionListener(this);
 		mniConsultaStocksLiquido.addActionListener(this);
 		mniModificacionStockLiquido.addActionListener(this);
+
+		//Funcionalidad a opción ayuda
+		mniAyuda.addActionListener(this);
 
 		//Crear ventana
 		ventana.setSize(330, 200);
@@ -80,7 +86,7 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 		//Fijar la distribución de labels and text fields
 		ventana.setLayout(new FlowLayout()); 
 		ventana.setBackground(Color.red);
-		
+
 		/*Añade los elementos del menú
 		Diferencia entre usuarios de tipo 0 y tipo 1
 		Si son usuarios solo podrán usar la opción de alta
@@ -93,7 +99,7 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 			mnuStockLiquidos.add(mniModificacionStockLiquido);
 		}
 		barraMenu.add(mnuStockLiquidos);
-		
+
 		mnuTiendas.add(mniAltaTienda);
 		if(tipoUsuario==0)
 		{
@@ -102,7 +108,7 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 			mnuTiendas.add(mniModificacionTienda);
 		}
 		barraMenu.add(mnuTiendas);
-		
+
 		mnuLiquidos.add(mniAltaLiquido);
 		if(tipoUsuario==0)
 		{
@@ -111,8 +117,12 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 			mnuLiquidos.add(mniModificacionLiquido);
 		}
 		barraMenu.add(mnuLiquidos);
+
+		mnuAyuda.add(mniAyuda);
+		barraMenu.add(mnuAyuda);
+
 		ventana.setMenuBar(barraMenu);
-		
+
 		//ventana.add(lblUsuario);
 		//fijar que la ventana salga siempre en el medio
 		ventana.setLocationRelativeTo(null); 
@@ -125,6 +135,7 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 	public void windowDeiconified(WindowEvent we) {}
 	public void windowIconified(WindowEvent we) {}
 	public void windowOpened(WindowEvent we) {}
+
 	//Funcionalidad de cerrar ventana
 	public void windowClosing(WindowEvent we)
 	{
@@ -173,8 +184,8 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 		{
 			new ModificarLiquido(tipoUsuario);
 		}
-		 //Acciones para Stock líquidos en tiendas
-		  else if(evento.getSource().equals(mniAltaStockLiquido))
+		//Acciones para Stock líquidos en tiendas
+		else if(evento.getSource().equals(mniAltaStockLiquido))
 		{
 			new AltaStock(tipoUsuario);
 		}
@@ -182,17 +193,20 @@ public class MenuPrincipalVapers implements WindowListener, ActionListener
 		{
 			new ConsultaStock(tipoUsuario);
 		}
-		
+
 		else if(evento.getSource().equals(mniBajaStockLiquido))
 		{
 			new BajaStock(tipoUsuario);
 		}
-		
+
 		else if(evento.getSource().equals(mniModificacionStockLiquido))
 		{
 			new ModificarStock(tipoUsuario);
 		}
-		  
+		else if(evento.getSource().equals(mniAyuda))
+		{
+			new Ayuda(tipoUsuario);
+		}
 		//ventana.setVisible(false);//Quita el menú
 	}
 }
