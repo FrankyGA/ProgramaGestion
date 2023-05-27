@@ -92,7 +92,20 @@ public class ConexionVapers
 		// TODO Auto-generated method stub
 		return super.clone();
 	}
-	
+	//------------------------------------------------------------------------------------------//
+		//Método para desconectar de la BD
+		public void desconectar()
+		{
+			try
+			{
+				if(connection!=null)
+				{
+					connection.close();
+				}
+			}
+			catch (SQLException e)
+			{}
+		}
 	//------------------------------------------------------------------------------------------//
 	//Método consultar usuario
 	public int consultar(String sentencia, int tipoUsuario)
@@ -146,7 +159,7 @@ public class ConexionVapers
 		return(contenido);
 	}
 	
-	//Método para consultar datos de tabla tiendas y crear pdf
+	//Método para consultar datos de tabla tiendas y crear documentos pdf y excel
 	public String consultarTiendasPDF()
 	{
 		String contenido = "";
@@ -271,20 +284,6 @@ public class ConexionVapers
 		}
 		return(resultado);
 	}
-	//------------------------------------------------------------------------------------------//
-	//Método para desconectar de la BD
-	public void desconectar()
-	{
-		try
-		{
-			if(connection!=null)
-			{
-				connection.close();
-			}
-		}
-		catch (SQLException e)
-		{}
-	}
 	
 	//------------------------------------------------------------------------------------------//
 	 //Método para consultar datos de tabla líquidos
@@ -315,7 +314,7 @@ public class ConexionVapers
 		return(contenido);
 	}
 	
-	//Método para consultar datos de tabla líquidos y crear pdf
+	//Método para consultar datos de tabla líquidos y crear documentos pdf y excel
 	public String consultarLiquidosPDF()
 	{
 		String contenido = "";
@@ -469,7 +468,7 @@ public class ConexionVapers
 		return(contenido);
 	}
 	
-	//Método para consultar datos de tabla tiendas y crear pdf
+	//Método para consultar datos de tabla tipoliquidotienda(stocks) y crear documentos pdf y excel
 	public String consultarStockPDF() {
 		
 		String contenido="";
