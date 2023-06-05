@@ -38,11 +38,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ConsultaStock implements WindowListener, ActionListener {
 
+	
 	private static final String CABECERA = "id\t\tnombreTienda\t\tmarcaLiquido\t\tmodeloLiquido\t\tstockLiquido";
 
-	private static final String CONSULTA = "listadoLiquidos.pdf";
+	private static final String CONSULTAPDF = "listadoLiquidos.pdf";
 
-	private static final String DEST_EXCEL = "listadoStocks.xlsx";
+	private static final String CONSULTAEXCEL = "listadoStocks.xlsx";
 
 	Frame ventana= new Frame ("Stock de las tiendas");
 	TextArea txaListado= new TextArea(10,67);
@@ -96,7 +97,7 @@ public class ConsultaStock implements WindowListener, ActionListener {
 		if (evento.getSource() == btnPdf){
 			try{
 				//Initialize PDF writer
-				PdfWriter writer = new PdfWriter(CONSULTA);
+				PdfWriter writer = new PdfWriter(CONSULTAPDF);
 				//Initialize PDF document
 				PdfDocument pdf = new PdfDocument(writer);
 				// Initialize document
@@ -134,7 +135,7 @@ public class ConsultaStock implements WindowListener, ActionListener {
 				document.close();
 
 				//Open the new PDF document just created
-				Desktop.getDesktop().open(new File(CONSULTA));
+				Desktop.getDesktop().open(new File(CONSULTAPDF));
 			}
 			catch (IOException ioe) {}
 		}
@@ -178,13 +179,13 @@ public class ConsultaStock implements WindowListener, ActionListener {
 					sheet.autoSizeColumn(i);
 				}
 				//Guardar el archivo de Excel
-				FileOutputStream outputStream = new FileOutputStream(DEST_EXCEL);
+				FileOutputStream outputStream = new FileOutputStream(CONSULTAEXCEL);
 				workbook.write(outputStream);
 				workbook.close();
 				outputStream.close();
 
 				//Abrir el nuevo archivo de Excel
-				Desktop.getDesktop().open(new File(DEST_EXCEL));
+				Desktop.getDesktop().open(new File(CONSULTAEXCEL));
 				bd.guardarLog( tipoUsuario, "Listado excel stocks" );	
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();

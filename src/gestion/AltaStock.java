@@ -24,110 +24,116 @@ import java.sql.SQLException;
 public class AltaStock implements WindowListener, ActionListener
 {
 	Frame ventana = new Frame("Nuevo Stock");
-	
+
 	Label lblStock = new Label("Stock");
 	TextField txtStock = new TextField(30);
-	
+
 	Choice choTiendas = new Choice();
 	Choice choLiquidos = new Choice();
-	
+
 	Label lblChoiceTienda = new Label("Elige una tienda");
 	Label lblChoiceLiquido = new Label("Elige un líquido");
-	
+
 	Button btnAceptar = new Button("Aceptar");
 	Button btnLimpiar = new Button("Limpiar");
-	
+
 	Dialog dlgMensaje = new Dialog(ventana, "Mensaje", true);
 	Label lblMensaje = new Label("XXXXXXXXXXXXXXX");
-	
+
 	ConexionVapers bd = new ConexionVapers();
 	ResultSet rs = null;
-	
+
 	int idTiendaFk;
 	int idTipoLiquidoFk;
 	int stockLiquido;
-	
+
 	int tipoUsuario;
 
 	/*Este constructor inicializa los componentes de la interfaz gráfica, 
 	 * establece sus propiedades y agrega controladores de eventos.*/
 	public AltaStock(int tipoUsuario){
-		
+
 		this.tipoUsuario=tipoUsuario;
-		
+
 		ventana.setLayout(new FlowLayout());
 		ventana.setBackground(Color.orange);
 		ventana.addWindowListener(this);
-		
+
 		choTiendas.setPreferredSize(new Dimension(250, 20));
 		choLiquidos.setPreferredSize(new Dimension(250, 20));
-		
+
 		ventana.add(lblStock);
 		ventana.add(txtStock);
-		
+
 		bd.conectar();
-		
+
 		//-------------------------Sacar los datos de la tabla tiendas----------------------------//
 		ventana.add(lblChoiceTienda);
-		ventana.add(choTiendas);
-		
+
+		choTiendas.add("Selecciona registro");
 		rs = bd.rellenarTienda();
-		
+
 		//Meter los datos en el Choice separados con guiones
 		try{
 			while(rs.next()){
 				choTiendas.add(rs.getInt("idTienda")
-				+ "-" + rs.getString("nombreTienda")
-				+ "-" + rs.getString("direccionTienda"));
+						+ "-" + rs.getString("nombreTienda")
+						+ "-" + rs.getString("direccionTienda"));
 			}
 		} catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
-		
+		ventana.add(choTiendas);
+
 		//-------------------------Sacar los datos de la tabla líquidos----------------------------//
 		ventana.add(lblChoiceLiquido);
-		ventana.add(choLiquidos);
-		
+
+		choLiquidos.add("Selecciona registro");
+
 		rs = bd.rellenarLiquido();
 		//Meter los datos en el Choice separados con guiones
 		try{
 			while(rs.next()){
 				choLiquidos.add(rs.getInt("idTipoLiquido")
-				+ "-" + rs.getString("marcaLiquido")
-				+ "-" + rs.getString("modeloLiquido")
-				+ "-" + rs.getString("capacidadLiquido"));
+						+ "-" + rs.getString("marcaLiquido")
+						+ "-" + rs.getString("modeloLiquido")
+						+ "-" + rs.getString("capacidadLiquido"));
 			}
 		} 
-		
+
 		catch (SQLException e){
 			e.printStackTrace();
 		}
-		
+
 		bd.desconectar();
-		
+
+		ventana.add(choLiquidos);
+
 		btnAceptar.addActionListener(this);
 		btnLimpiar.addActionListener(this);
-		
+
 		ventana.add(btnAceptar);
 		ventana.add(btnLimpiar);
-		
+
 		ventana.setSize(300,300);
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
 		ventana.setResizable(false);
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent evento){
-		
+
 		//Si pulsamos en limpiar, limpiamos campos
 		if(evento.getSource().equals(btnLimpiar)){
 			limpiar();
 		}
 		//Si pulsamos en aceptar
 		else if(evento.getSource().equals(btnAceptar)){
-			bd.conectar();
+			if ((!choTiendas.getSelectedItem().equals("Selecciona registro")) && (!choLiquidos.getSelectedItem().equals("Selecciona registro")) && txtStock.getText().length()!=0){
+
+				bd.conectar();
 				//Metemos los datos en un array sin el guión
 				String[] liquidos = choLiquidos.getSelectedItem().split("-");
 				//Sacamos el índice
@@ -136,29 +142,36 @@ public class AltaStock implements WindowListener, ActionListener
 				String[] tiendas = choTiendas.getSelectedItem().split("-");
 				//Sacamos el índice
 				idTiendaFk = Integer.parseInt(tiendas[0]);
-				
+
 				//Sacamos datos de número de stock introducido
 				String stockLiquidoString = txtStock.getText();
 				stockLiquido = Integer.parseInt(stockLiquidoString);
 				//Aplicamos método de insertar con los datos
 				int resultado = bd.insertarStock(stockLiquido, idTipoLiquidoFk, idTiendaFk, tipoUsuario);
-				
-			if(txtStock.getText().length()==0) {
-				lblMensaje.setText("El campo está vacio");
+
+				if(txtStock.getText().length()==0) {
+					lblMensaje.setText("El campo está vacio");
+				}
+				else if(resultado == 0)
+				{
+					limpiar();
+					lblMensaje.setText("Alta correcta");
+					mostrarDialogo();
+				}
+				else
+				{
+					lblMensaje.setText("Error en Alta");
+				}
+				mostrarDialogo();
+				bd.desconectar();
 			}
-			else if(resultado == 0)
-			{
-				limpiar();
-				lblMensaje.setText("Alta correcta");
+
+			else {
+				lblMensaje.setText("Debe seleccionar los datos a introducir");
 				mostrarDialogo();
 			}
-			else
-			{
-				lblMensaje.setText("Error en Alta");
-			}
-			mostrarDialogo();
-			bd.desconectar();
 		}
+
 	}
 	@Override
 	public void windowOpened(WindowEvent e){}
@@ -185,23 +198,25 @@ public class AltaStock implements WindowListener, ActionListener
 	public void windowActivated(WindowEvent e){}
 	@Override
 	public void windowDeactivated(WindowEvent e){}
-	
+
 	//Método para lanzar diálogo
 	public void mostrarDialogo()
 	{
 		dlgMensaje.setLayout(new FlowLayout());
 		dlgMensaje.addWindowListener(this);
 		dlgMensaje.add(lblMensaje);
-		dlgMensaje.setSize(150,80);
+		dlgMensaje.setSize(250,80);
 		dlgMensaje.setResizable(false);
 		dlgMensaje.setLocationRelativeTo(null);
 		dlgMensaje.setVisible(true);
 	}
-	
+
 	//Método para limpiar campos
 	public void limpiar()
 	{
-		txtStock.setText("");
+		choTiendas.select(0); //Selecciona la primera opción del Choice "choTiendas"
+	    choLiquidos.select(0); //Selecciona la primera opción del Choice "choLiquidos"
+	    txtStock.setText(""); //Limpia el campo de texto "txtStock"
 		txtStock.requestFocus();
 	}
 }

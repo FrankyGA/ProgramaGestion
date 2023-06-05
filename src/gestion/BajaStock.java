@@ -107,7 +107,7 @@ public class BajaStock implements  WindowListener, ActionListener {
 		//Si el usuario elige registro y pulsa en botón borrar
 		if (evento.getSource().equals(btnBorrar)){
 			//Si la elección del choice es igual a...
-			if ((choStocks.getSelectedItem().equals("Seleccionar el stock..."))){
+			if ((choStocks.getSelectedItem().equals("Seleccionar un stock por índice..."))){
 				lblMensaje.setText("Debes seleccionar un stock");
 				mostrarMensaje();
 			}

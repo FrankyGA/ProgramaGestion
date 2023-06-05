@@ -32,6 +32,7 @@ public class ConexionVapers
 	//------------------------------------------------------------------------------------------//
 	public void guardarLog(int tipoUsuario, String mensaje)
 	{
+		//Creamos variable para guardar el tipo de usuario
 		String usuario;
 		//ResultSet rs = null;
 		//Si es tipo 0 es administrador y sino es usuario común
@@ -43,13 +44,16 @@ public class ConexionVapers
 		{
 			usuario = "Usuario" /*+ rs.getString("nombreUsuario")*/;
 		}
+		//Se crea un objeto Date para obtener la fecha y hora actuales del sistema
 		//Sacamos la fecha y la hora del sistema
 		Date fecha = new Date();
+		//Se define el patrón de formato de fecha como "dd/MM/YYYY HH:mm:ss" utilizando la clase SimpleDateFormat.
 		//Damos formato a la fecha
 		String pattern = "dd/MM/YYYY HH:mm:ss";
 		//Creamos objeto
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		
+		//Bloque para controlar excepciones al trabajar con el archivo
 		try
 		{
 			//Abrir el fichero para añadir
@@ -57,7 +61,7 @@ public class ConexionVapers
 			BufferedWriter bw = new BufferedWriter(fw);
 			//Metemos el apunte
 			PrintWriter salida = new PrintWriter(bw);
-			//Damos formato al registro del movimiento
+			//Damos formato al registro del movimiento, println para escribir linea a linea
 			salida.println("["+simpleDateFormat.format(fecha)+"]["+
 					usuario + "]["+mensaje+"]");
 			//Cerrar el fichero

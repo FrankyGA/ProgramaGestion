@@ -87,36 +87,6 @@ public class ModificarLiquido implements WindowListener, ActionListener {
 		ventana.setVisible(true);//Mostrarla
 	}
 	
-	//Método para rellenar el listado
-	private void rellenarChoiceLiquidos(){
-		
-		choLiquidos.removeAll();
-		//Rellenar Choice
-		choLiquidos.add("Elegir líquido...");
-		//Conectar BD
-		bd.conectar();
-		//Sacar los datos de la tabla líquidos
-		rs=bd.rellenarLiquido();
-		//Registro a registro, meterlos en el Choice
-		try {
-			//Mientras haya registros
-			while(rs.next()){
-				
-				//Añadimos al choice
-				choLiquidos.add(rs.getInt("idTipoLiquido")+" - "+
-				" Liquido: " + rs.getString("marcaLiquido")+ 
-				" modelo: " + rs.getString("modeloLiquido")+ 
-				" capacidad: " + rs.getString("capacidadLiquido"));
-			}
-		} 
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//Desconectar BD
-		bd.desconectar();
-	}
-	
 	public void windowActivated(WindowEvent we) {}
 	public void windowClosed(WindowEvent we) {}
 	//Funcionalidad de cerrar ventana
@@ -144,6 +114,7 @@ public class ModificarLiquido implements WindowListener, ActionListener {
 			if(!choLiquidos.getSelectedItem().equals("Elegir líquido...")){
 				//Metemos en un array de string los datos quitándole los guiones
 				String[] seleccionado = choLiquidos.getSelectedItem().split("-");
+				
 				// Conectar BD y sacar los datos del líquido seleccionado
 				bd.conectar();
 				//Usamos método
@@ -190,6 +161,10 @@ public class ModificarLiquido implements WindowListener, ActionListener {
 				dlgEditar.setLocationRelativeTo(null);
 				dlgEditar.setVisible(true);
 			}
+			else {
+	            mostrarDialogo("No se ha seleccionado ninguna opción.");
+	        }
+			
 		}
 		//Si pulsamos botón Modificar...
 		else if(evento.getSource().equals(btnModificar))
@@ -229,5 +204,45 @@ public class ModificarLiquido implements WindowListener, ActionListener {
 		{
 			dlgEditar.setVisible(false);
 		}
+	}
+	
+	//Método para rellenar el listado
+		private void rellenarChoiceLiquidos(){
+			
+			choLiquidos.removeAll();
+			//Rellenar Choice
+			choLiquidos.add("Elegir líquido...");
+			//Conectar BD
+			bd.conectar();
+			//Sacar los datos de la tabla líquidos
+			rs=bd.rellenarLiquido();
+			//Registro a registro, meterlos en el Choice
+			try {
+				//Mientras haya registros
+				while(rs.next()){
+					
+					//Añadimos al choice
+					choLiquidos.add(rs.getInt("idTipoLiquido")+" - "+
+					" Liquido: " + rs.getString("marcaLiquido")+ 
+					" modelo: " + rs.getString("modeloLiquido")+ 
+					" capacidad: " + rs.getString("capacidadLiquido"));
+				}
+			} 
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//Desconectar BD
+			bd.desconectar();
+		}
+	
+	//Método para avisar que no se ha elegido opción
+	private void mostrarDialogo(String mensaje) {
+	    dlgMensaje.setSize(250, 100);
+	    dlgMensaje.setLayout(new FlowLayout());
+	    lblMensaje.setText(mensaje);
+	    dlgMensaje.add(lblMensaje);
+	    dlgMensaje.setLocationRelativeTo(null);
+	    dlgMensaje.setVisible(true);
 	}
 }

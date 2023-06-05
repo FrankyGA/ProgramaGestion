@@ -19,14 +19,14 @@ public class BajaLiquido implements WindowListener, ActionListener
 {
 	//Componentes de la ventana
 	Frame ventana = new Frame("Baja de líquido");
-	
+
 	Label lblCabecera = new Label("Elegir el líquido a Borrar:");
-	
+
 	//Creamos Choose para listado líquido
 	Choice choLiquidos = new Choice();
 	Button btnBorrar = new Button("Borrar");
 	Button btnCancelar = new Button("Cancelar");
-	
+
 	//Ventana para confirmar el borrado
 	Dialog dlgConfirmacion = new Dialog(ventana, "Confirmación", true);
 	Label lblConfirmacion = new Label("XXXXXXXXXXXXXXXXXXXXXXX");
@@ -35,18 +35,21 @@ public class BajaLiquido implements WindowListener, ActionListener
 
 	Dialog dlgMensaje = new Dialog(ventana, "Mensaje", true);
 	Label lblMensaje = new Label("XXXXXXXXXXXXXX");
+	
+	Dialog dlgError = new Dialog(ventana, "Error", true);
+	Label lblError = new Label("XXXXXXXXXXXXXX");
 
 	ConexionVapers bd = new ConexionVapers();
 	//Variable para guardar los datos
 	ResultSet rs = null;
 
 	int tipoUsuario;
-	
+
 	//Constructor de la clase
 	public BajaLiquido(int tipoUsuario){
-		
+
 		this.tipoUsuario=tipoUsuario;
-		
+
 		//Listener para dar funcionalidad
 		ventana.addWindowListener(this);
 		btnBorrar.addActionListener(this);
@@ -59,7 +62,7 @@ public class BajaLiquido implements WindowListener, ActionListener
 
 		ventana.setLayout(new FlowLayout());
 		ventana.setBackground(Color.green);
-		
+
 		ventana.add(lblCabecera);
 		//Rellenar Choice cabecera
 		choLiquidos.add("Elegir líquido...");
@@ -73,9 +76,9 @@ public class BajaLiquido implements WindowListener, ActionListener
 			while(rs.next())
 			{
 				choLiquidos.add(rs.getInt("idTipoLiquido")+"-"+
-				"-" + rs.getString("marcaLiquido")+ "-" + 
-				"-" + rs.getString("modeloLiquido")+ "-" +
-				"-" + rs.getString("capacidadLiquido"));
+						"-" + rs.getString("marcaLiquido")+ "-" + 
+						"-" + rs.getString("modeloLiquido")+ "-" +
+						"-" + rs.getString("capacidadLiquido"));
 			}
 		} 
 		catch (SQLException e) 
@@ -84,7 +87,7 @@ public class BajaLiquido implements WindowListener, ActionListener
 		}
 		//Desconectar BD
 		bd.desconectar();
-		
+
 		ventana.add(choLiquidos);
 		choLiquidos.setPreferredSize(new Dimension(280, 20));
 		ventana.add(btnBorrar);
@@ -108,6 +111,11 @@ public class BajaLiquido implements WindowListener, ActionListener
 		{
 			dlgConfirmacion.setVisible(false);
 		}
+		//Si el diálogo error esta activo, ese es el que hay que ocultar
+		else if(dlgError.isActive())
+		{
+			dlgError.setVisible(false);
+		}
 		//Si ninguno esta activo, se oculta la ventana
 		else
 		{
@@ -125,29 +133,39 @@ public class BajaLiquido implements WindowListener, ActionListener
 		//Si hemos pulsado el botón borrar...
 		if(evento.getSource().equals(btnBorrar))
 		{
-			//Mostrar el diálogo de confirmación
-			//Listener para dar funcionalidad
-			dlgConfirmacion.addWindowListener(this);
-			btnSi.addActionListener(this);
-			btnNo.addActionListener(this);
+			//Si ha seleccionado algún elemento del choice que no sea...
+			if(!choLiquidos.getSelectedItem().equals("Elegir líquido...")){
 
-			//Parámetros de la pantalla
-			dlgConfirmacion.setSize(450, 100); 
-			//No Permitir redimensionar
-			dlgConfirmacion.setResizable(false); 
 
-			dlgConfirmacion.setLayout(new FlowLayout());
-			
-			//Pregunta de confirmación del líquido seleccionado
-			lblConfirmacion.setText("¿Borrar el líquido "+
-			choLiquidos.getSelectedItem()+"?");
-			
-			dlgConfirmacion.add(lblConfirmacion);
-			dlgConfirmacion.add(btnSi);
-			dlgConfirmacion.add(btnNo);
-			//Fijar que la ventana salga siempre en el medio
-			dlgConfirmacion.setLocationRelativeTo(null); 
-			dlgConfirmacion.setVisible(true);
+				//Mostrar el diálogo de confirmación
+				//Listener para dar funcionalidad
+				dlgConfirmacion.addWindowListener(this);
+				btnSi.addActionListener(this);
+				btnNo.addActionListener(this);
+
+				//Parámetros de la pantalla
+				dlgConfirmacion.setSize(450, 100); 
+				//No Permitir redimensionar
+				dlgConfirmacion.setResizable(false); 
+
+				dlgConfirmacion.setLayout(new FlowLayout());
+
+				//Pregunta de confirmación del líquido seleccionado
+				lblConfirmacion.setText("¿Borrar el líquido "+
+						choLiquidos.getSelectedItem()+"?");
+
+				dlgConfirmacion.add(lblConfirmacion);
+				dlgConfirmacion.add(btnSi);
+				dlgConfirmacion.add(btnNo);
+				//Fijar que la ventana salga siempre en el medio
+				dlgConfirmacion.setLocationRelativeTo(null); 
+				dlgConfirmacion.setVisible(true);
+			}
+			else {
+				lblError.setText("No se ha seleccionado ninguna opción.");
+				mostrarMensajeError();
+			}
+
 		}
 		if(evento.getSource().equals(btnCancelar))
 		{
@@ -180,8 +198,8 @@ public class BajaLiquido implements WindowListener, ActionListener
 			// Desconectar
 			bd.desconectar();
 
+			
 			dlgMensaje.addWindowListener(this);
-
 			//Parámetros de la pantalla
 			dlgMensaje.setSize(350, 100);
 			//No Permitir redimensionar
@@ -194,5 +212,15 @@ public class BajaLiquido implements WindowListener, ActionListener
 			dlgMensaje.setVisible(true);
 			dlgConfirmacion.setVisible(false);
 		}
+	}
+	//Método para mensaje
+	private void mostrarMensajeError(){
+		dlgError.setLayout(new FlowLayout());
+		dlgError.setSize(250,75);
+		dlgError.addWindowListener(this);
+		dlgError.setResizable(false);
+		dlgError.add(lblError);
+		dlgError.setLocationRelativeTo(null);
+		dlgError.setVisible(true);
 	}
 }

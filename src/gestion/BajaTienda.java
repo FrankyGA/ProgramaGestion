@@ -35,6 +35,9 @@ public class BajaTienda implements WindowListener, ActionListener
 
 	Dialog dlgMensaje = new Dialog(ventana, "Mensaje", true);
 	Label lblMensaje = new Label("XXXXXXXXXXXXXX");
+	
+	Dialog dlgError = new Dialog(ventana, "Error", true);
+	Label lblError = new Label("XXXXXXXXXXXXXX");
 
 	ConexionVapers bd = new ConexionVapers();
 	//variable para guardar los datos
@@ -108,6 +111,11 @@ public class BajaTienda implements WindowListener, ActionListener
 		{
 			dlgConfirmacion.setVisible(false);
 		}
+		//Si el diálogo error esta activo, ese es el que hay que ocultar
+		else if(dlgError.isActive())
+		{
+			dlgError.setVisible(false);
+		}
 		//Si ninguno esta activo, se oculta la ventana
 		else
 		{
@@ -125,29 +133,36 @@ public class BajaTienda implements WindowListener, ActionListener
 		//Si hemos pulsado el botón borrar...
 		if(evento.getSource().equals(btnBorrar))
 		{
-			//Mostrar el diálogo de confirmación
-			//Listener para dar funcionalidad
-			dlgConfirmacion.addWindowListener(this);
-			btnSi.addActionListener(this);
-			btnNo.addActionListener(this);
+			//Si ha seleccionado algún elemento del choice que no sea...
+			if(!choTiendas.getSelectedItem().equals("Elegir tienda...")){
+				//Mostrar el diálogo de confirmación
+				//Listener para dar funcionalidad
+				dlgConfirmacion.addWindowListener(this);
+				btnSi.addActionListener(this);
+				btnNo.addActionListener(this);
 
-			//Parámetros de la ventana
-			dlgConfirmacion.setSize(350, 200);
-			//No Permitir redimensionar
-			dlgConfirmacion.setResizable(false); 
+				//Parámetros de la ventana
+				dlgConfirmacion.setSize(350, 200);
+				//No Permitir redimensionar
+				dlgConfirmacion.setResizable(false); 
 
-			dlgConfirmacion.setLayout(new FlowLayout());
-			
-			//Pregunta de confirmación de la tienda seleccionada
-			lblConfirmacion.setText("¿Borrar la tienda "+
-			choTiendas.getSelectedItem()+"?");
-			
-			dlgConfirmacion.add(lblConfirmacion);
-			dlgConfirmacion.add(btnSi);
-			dlgConfirmacion.add(btnNo);
-			//Fijar que la ventana salga siempre en el medio
-			dlgConfirmacion.setLocationRelativeTo(null); 
-			dlgConfirmacion.setVisible(true);
+				dlgConfirmacion.setLayout(new FlowLayout());
+
+				//Pregunta de confirmación de la tienda seleccionada
+				lblConfirmacion.setText("¿Borrar la tienda "+
+						choTiendas.getSelectedItem()+"?");
+
+				dlgConfirmacion.add(lblConfirmacion);
+				dlgConfirmacion.add(btnSi);
+				dlgConfirmacion.add(btnNo);
+				//Fijar que la ventana salga siempre en el medio
+				dlgConfirmacion.setLocationRelativeTo(null); 
+				dlgConfirmacion.setVisible(true);
+			}
+			else {
+				lblError.setText("No se ha seleccionado ninguna opción.");
+				mostrarMensajeError();
+			}
 		}
 		else if(evento.getSource().equals(btnCancelar))
 		{
@@ -194,5 +209,16 @@ public class BajaTienda implements WindowListener, ActionListener
 			dlgMensaje.setVisible(true);
 			dlgConfirmacion.setVisible(false);
 		}
+	}
+
+	//Método para mensaje
+	private void mostrarMensajeError(){
+		dlgError.setLayout(new FlowLayout());
+		dlgError.setSize(250,75);
+		dlgError.addWindowListener(this);
+		dlgError.setResizable(false);
+		dlgError.add(lblError);
+		dlgError.setLocationRelativeTo(null);
+		dlgError.setVisible(true);
 	}
 }
